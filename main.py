@@ -9,8 +9,6 @@ from telegram.request import HTTPXRequest
 
 
 logging.config.fileConfig('logs/logging.ini', disable_existing_loggers=False)
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
 log = logging.getLogger(__name__)
 
 
@@ -58,14 +56,12 @@ class Settings:
 
     def load(self):
         with self.lock:
-            temp = json.load(open(self.__location__, 'r'))
-            self.__dict__.update(**temp)
+            self.__dict__.update(**json.load(open(self.__location__, 'r')))
 
     def save(self):
         with self.lock:
             # noinspection PyTypeChecker
-            temp = dict(filter(lambda key: not key[0].startswith('__'), self.__dict__.items()))
-            json.dump(temp, open(self.__location__, 'w+'))
+            json.dump(dict(filter(lambda key: not key[0].startswith('__'), self.__dict__.items())), open(self.__location__, 'w+'))
 
 
 class HourlyBot:
